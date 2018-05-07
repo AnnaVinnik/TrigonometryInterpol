@@ -1,61 +1,53 @@
 #include <stdio.h>
 #include <math.h>
-int n = 5, N = 2;
-double x[5] = {0, 1.26, 2.51, 3.77, 5.03}, y[5], X = 5;
 
-int func(double x)
+#define n 2
+#define pi 3.1415926535
+
+int m = (n + 1) / 2;
+double x[n + 1] = {1, 2, 3}, y[n + 1] = {1, 8, 1}; 
+
+double b(int j)
 {
-	double f = 2 + cos(x) + sin(x) + 3*cos(2*x) + 2*sin(2*x) + cos(3*x) + sin(3*x);
-	return f;
+double b;
+	for (int i = 0; i <= n - 1; i++){
+		b += y[i] * cos(2 * pi * j * i / n);
+	}
+	b = b / n;
+return b;
 }
 
-double trigInter()
+double a(int j)
 {
-double a[N], b[N - 1], p;
-	// a[0]
-	for (int i = 0; i < n; i++)
-		a[0] += y[i];
-	a[0] = a[0] / n;
-	
-	// a[i]
-	for (int i = 1; i <= N; i++){
-		for (int j = 1; j <= n; j++){
-			a[i] += y[j] * cos((2 * 3.14 * i * j)/n);
-		}
-		a[i] = a[i] / n;
+double a;
+	for (int i = 0; i <= n - 1; i++){
+		a += y[i] * sin(2 * pi * i * j / n);
 	}
-	
-	// b[i]
-	for (int i = 1; i <= N; i++){
-		for (int j = 1; j <= n; j++){
-			b[i] += y[j] * sin((2 * 3.14 * i * j)/n);
-		}
-		b[i] = b[i] / n;
-	}	
-	
-	for (int i = 1; i <= N; i++)
-		p += a[i] * cos(i * X) + b[i] * sin(i * X);
-	p += a[0]/2;
-		
-	return p;
+	a = a / n;
+return a;
+}
+
+double TrigInter(double X)
+{
+double h = x[1] - x[0];
+double p;
+	for (int i = 1; i <= m; i++){
+		p += b(i) * cos(2 * pi * (X - x[0]) / n * h);
+		p += a(i) * sin(2 * pi * (X - x[0]) / n * h);
+	}
+	p += b(0);
+return p;	
 }
 
 int main()
 {
-double p;	
-	for (int i = 0; i < n; i++){
-		y[i] = func(x[i]);
-	}
-		printf("x: ");
-	for (int i = 0; i < n; i++)
-		printf("%.2f ", x[i]);
-	printf("\ny: ");
-	for (int i = 0; i < n; i++)
-		printf("%.2f ", y[i]);
+double X[10] = {0}, B, A, p;
 	
-	printf("\n");
-	p = trigInter();
-	printf("P[%.2f] = %.2f\n", X, p);
+	for (int i = 0; i < 10; i++){
+		X[i] = X[i - 1] + 0.5;
+		p = TrigInter(X[i]);
+		printf("P(%.1f) = %.3f\n", X[i], p);
+	}
 
 return 0;
 }
